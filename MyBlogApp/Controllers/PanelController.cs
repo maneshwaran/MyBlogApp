@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MyBlogApp.Data.FileManager;
 using MyBlogApp.Data.Repository;
 using MyBlogApp.Models;
+using MyBlogApp.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +15,12 @@ namespace MyBlogApp.Controllers
     public class PanelController : Controller
     {
         private readonly IRepository _repo;
-        public PanelController(IRepository repo)
+        private readonly IFileManager _fileManager;
+
+        public PanelController(IRepository repo, IFileManager fileManager)
         {
             _repo = repo;
+            _fileManager = fileManager;
         }
 
         public IActionResult index()
@@ -27,17 +32,27 @@ namespace MyBlogApp.Controllers
         [HttpGet]
         public IActionResult Edit(int? id)
         {
-            var post = new Post();
+            var post = new PostViewModel();
             if (id != null)
             {
-                post = _repo.GetPost((int)id);
+                var postInfo = _repo.GetPost((int)id);
+                post.Id = postInfo.Id;
+                post.Title = postInfo.Title;
+                post.Body = postInfo.Body;
             }
             return View(post);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(Post post)
+        public async Task<IActionResult> Edit(PostViewModel vm)
         {
+            var post = new Post
+            {
+                Body = vm.Body,
+                Title = vm.Title,
+                Id = vm.Id,
+                Image = await _fileManager.SaveImage(vm.Image)
+            };
             if (post.Id == 0)
                 _repo.AddPost(post);
             else

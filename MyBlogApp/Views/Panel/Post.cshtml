@@ -5,5 +5,13 @@
     @Model.Title
 </div>
 <div>
+
+    @if (!string.IsNullOrEmpty(Model.Image))
+    {
+        var image_path = $"/Image/{Model.Image}";
+        <img src="@image_path" />
+    }
+</div>
+<div>
     @Model.Body
 </div>

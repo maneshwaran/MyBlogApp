@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MyBlogApp.Data;
+using MyBlogApp.Data.FileManager;
 using MyBlogApp.Data.Repository;
 using System;
 using System.Collections.Generic;
@@ -42,6 +43,7 @@ namespace MyBlogApp
             });
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(_config["DefaultConnection"]));
             services.AddTransient<IRepository, Repository>();
+            services.AddTransient<IFileManager, FileManager>();
             services.AddMvc();
         }
 
@@ -54,6 +56,7 @@ namespace MyBlogApp
             }
             app.UseAuthentication();
             app.UseMvcWithDefaultRoute();
+            app.UseStaticFiles();
         }
     }
 }

@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MyBlogApp.Models
+namespace MyBlogApp.ViewModels
 {
-    public class Post
+    public class PostViewModel
     {
         public int Id { get; set; }
 
@@ -13,7 +14,7 @@ namespace MyBlogApp.Models
 
         public string Body { get; set; } = "";
 
-        public string Image { get; set; } = "";
+        public IFormFile Image { get; set; } = null;
 
         public DateTime Created { get; set; } = DateTime.Now;
     }
